@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="de" data-lang="de" data-path="tools/unit/">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Kostenloser Online-Einheitenrechner für Länge, Gewicht und Temperatur. Konvertieren Sie sofort Meter, Zoll, Kilogramm, Pfund, Celsius, Fahrenheit und mehr.">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none';">
+    <link rel="canonical" href="https://benri-hub.com/de/tools/unit/">
+    <link rel="alternate" hreflang="ja" href="https://benri-hub.com/tools/unit/">
+    <link rel="alternate" hreflang="en" href="https://benri-hub.com/en/tools/unit/">
+    <link rel="alternate" hreflang="zh-CN" href="https://benri-hub.com/zh/tools/unit/">
+    <link rel="alternate" hreflang="es" href="https://benri-hub.com/es/tools/unit/">
+    <link rel="alternate" hreflang="fr" href="https://benri-hub.com/fr/tools/unit/">
+    <link rel="alternate" hreflang="de" href="https://benri-hub.com/de/tools/unit/">
+    <link rel="alternate" hreflang="x-default" href="https://benri-hub.com/tools/unit/">
+    <title>Einheitenrechner (Länge, Gewicht, Temp) — BenriHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Noto+Sans+JP:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f0f0f;
+            --card: #1c1c1c;
+            --border: #272727;
+            --accent: #c8b89a;
+            --accent2: #e8d5b7;
+            --text: #e8e2d8;
+            --muted: #555;
+            --muted2: #888;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        header {
+            position: relative;
+            z-index: 1;
+            border-bottom: 1px solid var(--border);
+            padding: 8px clamp(16px, 5vw, 48px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            min-height: 56px;
+            gap: 12px;
+        }
+
+        .site-logo {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--accent2);
+            letter-spacing: 0.1em;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .site-logo span {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 0.55rem;
+            font-weight: 400;
+            color: var(--muted2);
+            letter-spacing: 0.05em;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: clamp(12px, 3vw, 24px);
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-nav a {
+            font-size: 0.75rem;
+            color: var(--text);
+            text-decoration: none;
+            letter-spacing: 0.05em;
+            transition: color 0.15s;
+            white-space: nowrap;
+        }
+
+        .header-nav a:hover {
+            color: var(--accent);
+        }
+
+        #lang-switcher {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.6rem;
+            padding: 3px 7px;
+            border-radius: 2px;
+            letter-spacing: 0.05em;
+            transition: all 0.15s;
+            font-family: 'Noto Sans JP', sans-serif;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+
+        .lang-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .lang-btn.active {
+            border-color: var(--accent);
+            color: var(--accent2);
+            background: rgba(200, 184, 154, 0.08);
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(32px, 6vw, 64px) 16px;
+        }
+
+        .tool-wrap {
+            width: 100%;
+            max-width: 640px;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .tool-label {
+            font-size: 0.63rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .tool-title {
+            font-family: 'Shippori Mincho', serif;
+            font-size: clamp(1.4rem, 5vw, 1.8rem);
+            font-weight: 800;
+            color: var(--accent2);
+            letter-spacing: 0.06em;
+            margin-bottom: 28px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: clamp(20px, 6vw, 32px);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--muted2);
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 0.85rem;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            border-radius: 2px;
+        }
+
+        .tab-btn:hover {
+            color: var(--accent);
+        }
+
+        .tab-btn.active {
+            background: rgba(200, 184, 154, 0.1);
+            color: var(--accent2);
+        }
+
+        .unit-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .unit-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .unit-label {
+            font-size: 0.75rem;
+            color: var(--muted2);
+            letter-spacing: 0.05em;
+        }
+
+        .unit-input-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .unit-input {
+            flex: 1;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            color: var(--text);
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 1.1rem;
+            padding: 12px;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+
+        .unit-input:focus {
+            border-color: var(--accent);
+        }
+
+        .unit-select {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            color: var(--text);
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: 0.85rem;
+            padding: 0 12px;
+            outline: none;
+            transition: border-color 0.2s;
+            cursor: pointer;
+            min-width: 120px;
+        }
+
+        .unit-select:focus {
+            border-color: var(--accent);
+        }
+
+        .swap-btn-wrap {
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+        }
+
+        .swap-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted2);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.2rem;
+        }
+
+        .swap-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent2);
+            transform: rotate(180deg);
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--border);
+            padding: 16px clamp(16px, 5vw, 48px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .footer-copy {
+            font-size: 0.62rem;
+            color: var(--muted);
+        }
+
+        .footer-note {
+            font-size: 0.6rem;
+            color: #333;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .beta-badge {
+            display: inline-block;
+            font-size: 0.55rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 1px 5px;
+            border-radius: 2px;
+            vertical-align: middle;
+            margin-left: 8px;
+            font-weight: normal;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="/de/" class="site-logo">BenriHub<span>made by Japanese</span></a>
+        <div class="header-right">
+            <nav class="header-nav">
+                <a href="/de/about/" data-i18n="footer_about"></a>
+                <a href="/de/privacy/" data-i18n="footer_privacy"></a>
+            </nav>
+            <div id="lang-switcher"></div>
+        </div>
+    </header>
+    <main>
+        <div class="tool-wrap">
+            <div class="tool-label" data-i18n="tool_label"></div>
+            <h1 class="tool-title" data-i18n="tool_unit_title"></h1>
+            <div class="card">
+                <div class="tabs">
+                    <button class="tab-btn active" data-cat="length" data-i18n="unit_cat_length"></button>
+                    <button class="tab-btn" data-cat="weight" data-i18n="unit_cat_weight"></button>
+                    <button class="tab-btn" data-cat="temp" data-i18n="unit_cat_temp"></button>
+                </div>
+                <div class="unit-grid">
+                    <div class="unit-row">
+                        <label class="unit-label" data-i18n="unit_from"></label>
+                        <div class="unit-input-group">
+                            <input type="number" id="input-val" class="unit-input" value="1" step="any">
+                            <select id="input-unit" class="unit-select"></select>
+                        </div>
+                    </div>
+                    <div class="swap-btn-wrap">
+                        <button id="btn-swap" class="swap-btn">⇅</button>
+                    </div>
+                    <div class="unit-row">
+                        <label class="unit-label" data-i18n="unit_to"></label>
+                        <div class="unit-input-group">
+                            <input type="number" id="output-val" class="unit-input" readonly>
+                            <select id="output-unit" class="unit-select"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <span class="footer-copy" data-i18n="footer_copy"></span>
+        <span class="footer-note" data-i18n="footer_note"></span>
+    </footer>
+    <script src="/i18n.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const categories = {
+                length: {
+                    units: ['m', 'cm', 'mm', 'km', 'inch', 'ft', 'yd', 'mi'],
+                    rates: { m: 1, cm: 0.01, mm: 0.001, km: 1000, inch: 0.0254, ft: 0.3048, yd: 0.9144, mi: 1609.344 }
+                },
+                weight: {
+                    units: ['kg', 'g', 'mg', 't', 'lb', 'oz'],
+                    rates: { kg: 1, g: 0.001, mg: 0.000001, t: 1000, lb: 0.45359237, oz: 0.028349523125 }
+                },
+                temp: {
+                    units: ['c', 'f', 'k'],
+                    toBase: { c: v => v, f: v => (v - 32) * 5 / 9, k: v => v - 273.15 },
+                    fromBase: { c: v => v, f: v => (v * 9 / 5) + 32, k: v => v + 273.15 }
+                }
+            };
+
+            let currentCat = 'length';
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const inpVal = document.getElementById('input-val');
+            const outVal = document.getElementById('output-val');
+            const inpUnit = document.getElementById('input-unit');
+            const outUnit = document.getElementById('output-unit');
+            const btnSwap = document.getElementById('btn-swap');
+
+            // Basic phrase localization
+            const fullLang = document.documentElement.getAttribute("data-lang") || "ja";
+            const lang = LANGS[fullLang] ? fullLang : fullLang.split('-')[0];
+            const T = key => (LANGS[lang] && LANGS[lang][key]) || LANGS.ja[key] || key;
+
+            const updateUnits = () => {
+                const cat = categories[currentCat];
+                inpUnit.innerHTML = '';
+                outUnit.innerHTML = '';
+                cat.units.forEach(u => {
+                    const opt1 = document.createElement('option');
+                    opt1.value = u; opt1.textContent = T('unit_' + u);
+                    inpUnit.appendChild(opt1);
+                    const opt2 = document.createElement('option');
+                    opt2.value = u; opt2.textContent = T('unit_' + u);
+                    outUnit.appendChild(opt2);
+                });
+                // Set default output unit to second one
+                if (outUnit.options.length > 1) outUnit.selectedIndex = 1;
+                calc();
+            };
+
+            const calc = () => {
+                const v = parseFloat(inpVal.value);
+                if (isNaN(v)) { outVal.value = ''; return; }
+
+                const u1 = inpUnit.value;
+                const u2 = outUnit.value;
+                const cat = categories[currentCat];
+
+                let result;
+                if (currentCat === 'temp') {
+                    const base = cat.toBase[u1](v);
+                    result = cat.fromBase[u2](base);
+                } else {
+                    const base = v * cat.rates[u1];
+                    result = base / cat.rates[u2];
+                }
+
+                // Precise rounding
+                outVal.value = Number(result.toFixed(8)).toString();
+            };
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentCat = btn.dataset.cat;
+                    updateUnits();
+                });
+            });
+
+            inpVal.addEventListener('input', calc);
+            inpUnit.addEventListener('change', calc);
+            outUnit.addEventListener('change', calc);
+
+            btnSwap.addEventListener('click', () => {
+                const u1 = inpUnit.selectedIndex;
+                const u2 = outUnit.selectedIndex;
+                inpUnit.selectedIndex = u2;
+                outUnit.selectedIndex = u1;
+                calc();
+            });
+
+            updateUnits();
+        });
+    </script>
+</body>
+
+</html>

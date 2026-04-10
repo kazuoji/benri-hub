@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr" data-path="tools/char/">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Outil gratuit de comptage de caractères en ligne. Comptez les lettres, mots et lignes instantanément dans votre navigateur.">
+<meta name="robots" content="index, follow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none';">
+<link rel="canonical" href="https://benri-hub.com/fr/tools/char/">
+<link rel="alternate" hreflang="ja" href="https://benri-hub.com/tools/char/">
+<link rel="alternate" hreflang="en" href="https://benri-hub.com/en/tools/char/">
+<link rel="alternate" hreflang="zh-CN" href="https://benri-hub.com/zh/tools/char/">
+<link rel="alternate" hreflang="es" href="https://benri-hub.com/es/tools/char/">
+<link rel="alternate" hreflang="fr" href="https://benri-hub.com/fr/tools/char/">
+<link rel="alternate" hreflang="de" href="https://benri-hub.com/de/tools/char/">
+<link rel="alternate" hreflang="x-default" href="https://benri-hub.com/tools/char/">
+<title>Character Counter — BenriHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0f0f0f; --card:#1c1c1c; --border:#272727; --accent:#c8b89a; --accent2:#e8d5b7; --text:#e8e2d8; --muted:#555; --muted2:#888; --danger:#b94040; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); min-height:100dvh; display:flex; flex-direction:column; }
+  body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"); pointer-events:none; z-index:0; }
+  header { position:relative; z-index:1; border-bottom:1px solid var(--border); padding:8px clamp(16px,5vw,48px); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; min-height:56px; gap:12px; }
+  .site-logo { font-family:'Shippori Mincho',serif; font-size:1.1rem; font-weight:800; color:var(--accent2); letter-spacing:0.1em; text-decoration:none; white-space:nowrap; }
+  .site-logo span { font-family:'Noto Sans JP',sans-serif; font-size:0.55rem; font-weight:400; color:var(--muted2); letter-spacing:0.05em; margin-left:8px; vertical-align:middle; }
+  .header-right { display:flex; align-items:center; gap:clamp(12px, 3vw, 24px); flex-wrap:wrap; justify-content:flex-end; }
+  .header-nav { display:flex; gap:12px; }
+  .header-nav a { font-size:0.75rem; color:var(--text); text-decoration:none; letter-spacing:0.05em; transition:color 0.15s; white-space:nowrap; }
+  .header-nav a:hover { color:var(--accent); }
+  #lang-switcher { display:flex; gap:4px; flex-wrap:wrap; justify-content:flex-end; }
+  .lang-btn { background:transparent; border:1px solid var(--border); color:var(--muted); font-size:0.6rem; padding:3px 7px; border-radius:2px; letter-spacing:0.05em; transition:all 0.15s; font-family:'Noto Sans JP',sans-serif; white-space:nowrap; text-decoration:none; }
+  .lang-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .lang-btn.active { border-color:var(--accent); color:var(--accent2); background:rgba(200,184,154,0.08); }
+  main { position:relative; z-index:1; flex:1; display:flex; align-items:center; justify-content:center; padding:clamp(32px,6vw,64px) 16px; }
+  .tool-wrap { width:100%; max-width:640px; animation:fadeUp 0.6s ease both; }
+  .tool-label { font-size:0.63rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .tool-title { font-family:'Shippori Mincho',serif; font-size:clamp(1.4rem,5vw,1.8rem); font-weight:800; color:var(--accent2); letter-spacing:0.06em; margin-bottom:28px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:4px; padding:clamp(20px,6vw,32px); }
+  .char-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+  .char-stat { background:var(--bg); border:1px solid var(--border); border-radius:2px; padding:12px; text-align:center; }
+  .stat-val { font-family:'Noto Sans JP',sans-serif; font-size:1.6rem; font-weight:500; color:var(--accent2); line-height:1; margin-bottom:4px; }
+  .stat-label { font-size:0.6rem; letter-spacing:0.1em; color:var(--muted2); }
+  .char-area { width:100%; min-height:160px; background:var(--bg); border:1px solid var(--border); border-radius:2px; color:var(--text); font-family:'Noto Sans JP',sans-serif; font-size:0.95rem; padding:14px; outline:none; transition:border-color 0.2s; resize:vertical; line-height:1.6; margin-bottom:12px; }
+  .char-area:focus { border-color:var(--accent); }
+  .btn-clear { background:transparent; border:1px solid var(--border); color:var(--muted); border-radius:2px; font-family:'Noto Sans JP',sans-serif; font-size:0.8rem; padding:8px 16px; cursor:pointer; transition:all 0.2s; }
+  .btn-clear:hover { border-color:var(--danger); color:var(--danger); }
+
+  footer { position:relative; z-index:1; border-top:1px solid var(--border); padding:16px clamp(16px,5vw,48px); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .footer-copy { font-size:0.62rem; color:var(--muted); }
+  .footer-note { font-size:0.6rem; color:#333; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  .beta-badge { display:inline-block; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; border:1px solid var(--accent); color:var(--accent); padding:1px 5px; border-radius:2px; vertical-align:middle; margin-left:8px; font-weight:normal; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/fr/" class="site-logo">BenriHub<span>made by Japanese</span></a>
+  <div class="header-right">
+    <nav class="header-nav">
+      <a href="/fr/about/" data-i18n="footer_about"></a>
+      <a href="/fr/privacy/" data-i18n="footer_privacy"></a>
+    </nav>
+    <div id="lang-switcher"></div>
+  </div>
+</header>
+<main>
+  <div class="tool-wrap">
+    <div class="tool-label" data-i18n="tool_label"></div>
+    <h1 class="tool-title" data-i18n="tool_char_title"></h1>
+    <div class="card">
+      <div class="char-grid">
+        <div class="char-stat">
+          <div class="stat-val" id="val-total">0</div>
+          <div class="stat-label" data-i18n="char_total"></div>
+        </div>
+        <div class="char-stat">
+          <div class="stat-val" id="val-nospace">0</div>
+          <div class="stat-label" data-i18n="char_nospace"></div>
+        </div>
+        <div class="char-stat">
+          <div class="stat-val" id="val-words">0</div>
+          <div class="stat-label" data-i18n="char_words"></div>
+        </div>
+        <div class="char-stat">
+          <div class="stat-val" id="val-lines">0</div>
+          <div class="stat-label" data-i18n="char_lines"></div>
+        </div>
+      </div>
+      <textarea id="char-input" class="char-area" data-i18n-ph="char_placeholder"></textarea>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px;">
+        <div class="error-msg" data-i18n="char_warning" style="text-align:left; color:var(--muted2); font-size:0.7rem; line-height:1.5;"></div>
+        <button class="btn-clear" id="btn-clear" data-i18n="btn_clear"></button>
+      </div>
+    </div>
+  </div>
+</main>
+<footer>
+  <span class="footer-copy" data-i18n="footer_copy"></span>
+  <span class="footer-note" data-i18n="footer_note"></span>
+</footer>
+<script src="/i18n.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const inp = document.getElementById("char-input");
+  const elTotal = document.getElementById("val-total");
+  const elNoSpace = document.getElementById("val-nospace");
+  const elWords = document.getElementById("val-words");
+  const elLines = document.getElementById("val-lines");
+  const btnClear = document.getElementById("btn-clear");
+
+  // Basic phrase localization for placeholder
+  const fullLang = document.documentElement.getAttribute("data-lang") || "ja";
+  const lang = LANGS[fullLang] ? fullLang : fullLang.split('-')[0];
+  const T = key => (LANGS[lang] && LANGS[lang][key]) || LANGS.ja[key] || key;
+  inp.placeholder = T("char_placeholder");
+
+  const updateCounts = () => {
+    const text = inp.value;
+    elTotal.textContent = text.length;
+    elNoSpace.textContent = text.replace(/\s+/g, '').length;
+    
+    // Word count handles basic western layouts and CJK
+    const wordsObj = text.match(/[a-zA-Z0-9_\-]+|[\u4e00-\u9fa5]|[\u3040-\u309f]|[\u30a0-\u30ff]/g);
+    elWords.textContent = wordsObj ? wordsObj.length : 0;
+    
+    elLines.textContent = text.length === 0 ? 0 : text.split('\n').length;
+  };
+
+  inp.addEventListener("input", updateCounts);
+  
+  btnClear.addEventListener("click", () => {
+    inp.value = "";
+    updateCounts();
+    inp.focus();
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="de" data-lang="de" data-path="tools/date/">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Kostenloser Datumsrechner. Tage zu einem Datum hinzufügen/abziehen oder Differenz berechnen.">
+<meta name="robots" content="index, follow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none';">
+<link rel="canonical" href="https://benri-hub.com/de/tools/date/">
+<link rel="alternate" hreflang="ja" href="https://benri-hub.com/tools/date/">
+<link rel="alternate" hreflang="en" href="https://benri-hub.com/en/tools/date/">
+<link rel="alternate" hreflang="zh-CN" href="https://benri-hub.com/zh/tools/date/">
+<link rel="alternate" hreflang="es" href="https://benri-hub.com/es/tools/date/">
+<link rel="alternate" hreflang="fr" href="https://benri-hub.com/fr/tools/date/">
+<link rel="alternate" hreflang="de" href="https://benri-hub.com/de/tools/date/">
+<link rel="alternate" hreflang="x-default" href="https://benri-hub.com/tools/date/">
+<title>Date Calculator — BenriHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0f0f0f; --card:#1c1c1c; --border:#272727; --accent:#c8b89a; --accent2:#e8d5b7; --text:#e8e2d8; --muted:#555; --muted2:#888; --danger:#b94040; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); min-height:100dvh; display:flex; flex-direction:column; }
+  body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"); pointer-events:none; z-index:0; }
+  header { position:relative; z-index:1; border-bottom:1px solid var(--border); padding:8px clamp(16px,5vw,48px); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; min-height:56px; gap:12px; }
+  .site-logo { font-family:'Shippori Mincho',serif; font-size:1.1rem; font-weight:800; color:var(--accent2); letter-spacing:0.1em; text-decoration:none; white-space:nowrap; }
+  .site-logo span { font-family:'Noto Sans JP',sans-serif; font-size:0.55rem; font-weight:400; color:var(--muted2); letter-spacing:0.05em; margin-left:8px; vertical-align:middle; }
+  .header-right { display:flex; align-items:center; gap:clamp(12px, 3vw, 24px); flex-wrap:wrap; justify-content:flex-end; }
+  .header-nav { display:flex; gap:12px; }
+  .header-nav a { font-size:0.75rem; color:var(--text); text-decoration:none; letter-spacing:0.05em; transition:color 0.15s; white-space:nowrap; }
+  .header-nav a:hover { color:var(--accent); }
+  #lang-switcher { display:flex; gap:4px; flex-wrap:wrap; justify-content:flex-end; }
+  .lang-btn { background:transparent; border:1px solid var(--border); color:var(--muted); font-size:0.6rem; padding:3px 7px; border-radius:2px; letter-spacing:0.05em; transition:all 0.15s; font-family:'Noto Sans JP',sans-serif; white-space:nowrap; text-decoration:none; }
+  .lang-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .lang-btn.active { border-color:var(--accent); color:var(--accent2); background:rgba(200,184,154,0.08); }
+  main { position:relative; z-index:1; flex:1; display:flex; align-items:center; justify-content:center; padding:clamp(32px,6vw,64px) 16px; }
+  .tool-wrap { width:100%; max-width:640px; animation:fadeUp 0.6s ease both; }
+  .tool-label { font-size:0.63rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .tool-title { font-family:'Shippori Mincho',serif; font-size:clamp(1.4rem,5vw,1.8rem); font-weight:800; color:var(--accent2); letter-spacing:0.06em; margin-bottom:28px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:4px; padding:clamp(20px,6vw,32px); }
+  .tab-list { display:flex; gap:8px; margin-bottom:24px; border-bottom:1px solid var(--border); }
+  .tab-btn { background:transparent; border:none; border-bottom:2px solid transparent; color:var(--muted); font-family:'Noto Sans JP',sans-serif; font-size:0.9rem; padding:8px 16px; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+  .tab-btn:hover { color:var(--text); }
+  .tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:500; }
+  .tab-content { display:none; animation:fadeUp 0.4s ease both; }
+  .tab-content.active { display:block; }
+  
+  .input-group { margin-bottom:16px; }
+  .input-label { display:block; font-size:0.75rem; color:var(--muted); margin-bottom:6px; letter-spacing:0.05em; }
+  .input-row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .date-input, .num-input, .select-input { background:var(--bg); border:1px solid var(--border); border-radius:2px; color:var(--text); font-family:'Noto Sans JP',sans-serif; font-size:1rem; padding:10px 12px; outline:none; transition:border-color 0.2s; }
+  .date-input:focus, .num-input:focus, .select-input:focus { border-color:var(--accent); }
+  .date-input { flex:1; min-width:180px; }
+  .num-input { flex:1; min-width:80px; text-align:right; }
+  .select-input { flex:1; min-width:120px; }
+  
+  .num-wrap { display:flex; gap:8px; align-items:center; flex:1; min-width:120px; }
+  .num-wrap span { font-size:0.8rem; color:var(--muted2); white-space:nowrap; }
+  
+  .btn-action { background:var(--accent); color:var(--bg); border:none; border-radius:2px; font-family:'Noto Sans JP',sans-serif; font-size:0.9rem; font-weight:500; padding:12px 24px; cursor:pointer; transition:opacity 0.2s; width:100%; margin-top:8px; }
+  .btn-action:hover { opacity:0.9; }
+  .btn-secondary { background:transparent; border:1px solid var(--border); color:var(--text); border-radius:2px; font-size:0.8rem; padding:6px 12px; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+  .btn-secondary:hover { border-color:var(--accent); color:var(--accent); }
+  
+  .result-box { margin-top:24px; background:var(--bg); border:1px solid var(--border); border-radius:2px; padding:20px; text-align:center; }
+  .result-label { font-size:0.7rem; color:var(--muted); letter-spacing:0.1em; margin-bottom:8px; }
+  .result-val { font-family:'Noto Sans JP',sans-serif; font-size:1.8rem; font-weight:500; color:var(--accent2); }
+  .result-sub { font-size:0.85rem; color:var(--muted2); margin-top:4px; }
+
+  footer { position:relative; z-index:1; border-top:1px solid var(--border); padding:16px clamp(16px,5vw,48px); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .footer-copy { font-size:0.62rem; color:var(--muted); }
+  .footer-note { font-size:0.6rem; color:#333; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  .beta-badge { display:inline-block; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; border:1px solid var(--accent); color:var(--accent); padding:1px 5px; border-radius:2px; vertical-align:middle; margin-left:8px; font-weight:normal; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/de/" class="site-logo">BenriHub<span>made by Japanese</span></a>
+  <div class="header-right">
+    <nav class="header-nav">
+      <a href="/de/about/" data-i18n="footer_about"></a>
+      <a href="/de/privacy/" data-i18n="footer_privacy"></a>
+    </nav>
+    <div id="lang-switcher"></div>
+  </div>
+</header>
+<main>
+  <div class="tool-wrap">
+    <div class="tool-label" data-i18n="tool_label"></div>
+    <h1 class="tool-title" data-i18n="tool_date_title"></h1>
+    <div class="card">
+      <div class="tab-list">
+        <button class="tab-btn active" data-target="tab-add" data-i18n="date_tab_add"></button>
+        <button class="tab-btn" data-target="tab-diff" data-i18n="date_tab_diff"></button>
+      </div>
+
+      <!-- Tab 1: Add / Subtract -->
+      <div id="tab-add" class="tab-content active">
+        <div class="input-group">
+          <label class="input-label" data-i18n="date_base_date"></label>
+          <div class="input-row">
+            <input type="date" id="add-base" class="date-input">
+            <button class="btn-secondary" id="add-today" data-i18n="btn_today"></button>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label" data-i18n="date_add_sub"></label>
+          <div class="input-row">
+            <select id="add-op" class="select-input">
+              <option value="1">+</option>
+              <option value="-1">-</option>
+            </select>
+            <div class="num-wrap">
+              <input type="number" id="add-y" class="num-input" value="0" min="0">
+              <span data-i18n="date_years"></span>
+            </div>
+            <div class="num-wrap">
+              <input type="number" id="add-m" class="num-input" value="0" min="0">
+              <span data-i18n="date_months"></span>
+            </div>
+            <div class="num-wrap">
+              <input type="number" id="add-d" class="num-input" value="0" min="0">
+              <span data-i18n="date_days"></span>
+            </div>
+          </div>
+        </div>
+        <button class="btn-action" id="btn-calc-add" data-i18n="btn_calc"></button>
+        <div class="result-box" id="res-box-add" style="display:none;">
+          <div class="result-label" data-i18n="date_result_label"></div>
+          <div class="result-val" id="res-add"></div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Difference -->
+      <div id="tab-diff" class="tab-content">
+        <div class="input-group">
+          <label class="input-label" data-i18n="date_start"></label>
+          <div class="input-row">
+            <input type="date" id="diff-start" class="date-input">
+            <button class="btn-secondary" id="diff-today-start" data-i18n="btn_today"></button>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label" data-i18n="date_end"></label>
+          <div class="input-row">
+            <input type="date" id="diff-end" class="date-input">
+            <button class="btn-secondary" id="diff-today-end" data-i18n="btn_today"></button>
+          </div>
+        </div>
+        <button class="btn-action" id="btn-calc-diff" data-i18n="btn_calc"></button>
+        <div class="result-box" id="res-box-diff" style="display:none;">
+          <div class="result-label" data-i18n="date_diff_result"></div>
+          <div class="result-val" id="res-diff-days"></div>
+          <div class="result-sub" id="res-diff-ymd"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+<footer>
+  <span class="footer-copy" data-i18n="footer_copy"></span>
+  <span class="footer-note" data-i18n="footer_note"></span>
+</footer>
+<script src="/i18n.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // --- Tab Switching ---
+  const tabBtns = document.querySelectorAll(".tab-btn");
+  const tabContents = document.querySelectorAll(".tab-content");
+  tabBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      tabBtns.forEach(b => b.classList.remove("active"));
+      tabContents.forEach(c => c.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById(btn.getAttribute("data-target")).classList.add("active");
+    });
+  });
+
+  // --- Helper: Format Date (YYYY-MM-DD or localised via basic JS output) ---
+  const lpad = (n) => n.toString().padStart(2, '0');
+  const getTodayStr = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${lpad(d.getMonth()+1)}-${lpad(d.getDate())}`;
+  };
+  
+  const formatDateStr = (d) => {
+    return `${d.getFullYear()}/${lpad(d.getMonth()+1)}/${lpad(d.getDate())}`;
+  };
+
+  // --- Tab 1 Logic ---
+  const addBase = document.getElementById("add-base");
+  const addToday = document.getElementById("add-today");
+  const addOp = document.getElementById("add-op");
+  const addY = document.getElementById("add-y");
+  const addM = document.getElementById("add-m");
+  const addD = document.getElementById("add-d");
+  const btnCalcAdd = document.getElementById("btn-calc-add");
+  const resBoxAdd = document.getElementById("res-box-add");
+  const resAdd = document.getElementById("res-add");
+
+  addBase.value = getTodayStr();
+  addToday.addEventListener("click", () => addBase.value = getTodayStr());
+
+  btnCalcAdd.addEventListener("click", () => {
+    if (!addBase.value) return;
+    const d = new Date(addBase.value);
+    const op = parseInt(addOp.value);
+    const y = parseInt(addY.value) || 0;
+    const m = parseInt(addM.value) || 0;
+    const day = parseInt(addD.value) || 0;
+    
+    // Exact day check for month boundaries
+    const originalDate = d.getDate();
+    d.setFullYear(d.getFullYear() + (y * op));
+    d.setMonth(d.getMonth() + (m * op));
+    // Check if month jump caused roll-over (e.g. Jan 31 + 1 month -> Mar 3)
+    // Browsers standard behavior rolls over, but often users expect Feb 28/29.
+    // Standard JS behavior is used here as it's consistent mathematically.
+    d.setDate(d.getDate() + (day * op));
+
+    resAdd.textContent = formatDateStr(d);
+    resBoxAdd.style.display = "block";
+  });
+
+  // --- Tab 2 Logic ---
+  const diffStart = document.getElementById("diff-start");
+  const diffEnd = document.getElementById("diff-end");
+  const diffTodayStart = document.getElementById("diff-today-start");
+  const diffTodayEnd = document.getElementById("diff-today-end");
+  const btnCalcDiff = document.getElementById("btn-calc-diff");
+  const resBoxDiff = document.getElementById("res-box-diff");
+  const resDiffDays = document.getElementById("res-diff-days");
+  const resDiffYmd = document.getElementById("res-diff-ymd");
+
+  diffTodayStart.addEventListener("click", () => diffStart.value = getTodayStr());
+  diffTodayEnd.addEventListener("click", () => diffEnd.value = getTodayStr());
+
+  btnCalcDiff.addEventListener("click", () => {
+    if (!diffStart.value || !diffEnd.value) return;
+    const d1 = new Date(diffStart.value);
+    const d2 = new Date(diffEnd.value);
+    
+    // Prevent time zone issues
+    d1.setHours(0,0,0,0);
+    d2.setHours(0,0,0,0);
+    
+    const diffTime = Math.abs(d2 - d1);
+    const diffDaysVal = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    const fullLang = document.documentElement.getAttribute("data-lang") || "ja";
+    const lang = (typeof LANGS !== 'undefined' && LANGS[fullLang]) ? fullLang : fullLang.split('-')[0];
+    const T = key => (typeof LANGS !== 'undefined' && LANGS[lang] && LANGS[lang][key]) ? LANGS[lang][key] : key;
+
+    resDiffDays.textContent = diffDaysVal + " " + T("date_days");
+
+    // Calculate Y M D roughly
+    const isReversed = d1 > d2;
+    let startD = isReversed ? new Date(d2) : new Date(d1);
+    let endD = isReversed ? new Date(d1) : new Date(d2);
+    
+    let years = endD.getFullYear() - startD.getFullYear();
+    let months = endD.getMonth() - startD.getMonth();
+    let days = endD.getDate() - startD.getDate();
+
+    if (days < 0) {
+      months--;
+      // get days in previous month
+      const prevMonth = new Date(endD.getFullYear(), endD.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    let strParts = [];
+    if (years > 0) strParts.push(years + " " + T("date_years"));
+    if (months > 0) strParts.push(months + " " + T("date_months"));
+    if (days > 0 || (years === 0 && months === 0)) strParts.push(days + " " + T("date_days"));
+    
+    resDiffYmd.textContent = (isReversed ? "- " : "") + strParts.join(" ");
+    resBoxDiff.style.display = "block";
+  });
+});
+</script>
+</body>
+</html>
