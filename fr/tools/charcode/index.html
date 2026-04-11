@@ -24,7 +24,9 @@
   body { font-family:'Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); min-height:100dvh; display:flex; flex-direction:column; }
   body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"); pointer-events:none; z-index:0; }
   header { position:relative; z-index:1; border-bottom:1px solid var(--border); padding:8px clamp(16px,5vw,48px); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; min-height:56px; gap:12px; }
-  .site-logo { font-family:'Shippori Mincho',serif; font-size:1.1rem; font-weight:800; color:var(--accent2); letter-spacing:0.1em; text-decoration:none; white-space:nowrap; }
+  .site-logo {
+      position: relative;
+      z-index: 1; font-family:'Shippori Mincho',serif; font-size:1.1rem; font-weight:800; color:var(--accent2); letter-spacing:0.1em; text-decoration:none; white-space:nowrap; }
   .site-logo span { font-family:'Noto Sans JP',sans-serif; font-size:0.55rem; font-weight:400; color:var(--muted2); letter-spacing:0.05em; margin-left:8px; vertical-align:middle; }
   .header-right { display:flex; align-items:center; gap:clamp(12px, 3vw, 24px); flex-wrap:wrap; justify-content:flex-end; }
   .header-nav { display:flex; gap:12px; }
@@ -71,6 +73,13 @@
     z-index: -1;
     pointer-events: none;
   }
+
+  .mode-toggle { display: flex; gap: 16px; margin-bottom: 12px; }
+  .mode-toggle label { display: flex; align-items: center; gap: 4px; font-size: 0.85rem; cursor: pointer; color: var(--muted); transition: color 0.2s; }
+  .mode-toggle label:hover { color: var(--text); }
+  .mode-toggle input[type="radio"] { accent-color: var(--accent); }
+  .mode-toggle input[type="radio"]:checked + span { color: var(--accent2); font-weight: 500; }
+  .invalid-cell { font-size:0.8rem; color:var(--danger); }
 </style>
   <link rel="icon" href="/images/favicon.png?v=1" type="image/png">
 </head>
@@ -90,7 +99,13 @@
     <div class="tool-label" data-i18n="tool_label"></div>
     <h1 class="tool-title" data-i18n="tool_charcode_title"></h1>
     <div class="card">
-      <textarea id="char-input" class="char-area" data-i18n-ph="charcode_placeholder"></textarea>
+      
+      <div class="mode-toggle">
+        <label><input type="radio" name="mode" value="encode" checked> <span data-i18n="char_mode_encode"></span></label>
+        <label><input type="radio" name="mode" value="decode"> <span data-i18n="char_mode_decode"></span></label>
+      </div>
+      <textarea id="char-input"
+ class="char-area" data-i18n-ph="charcode_placeholder"></textarea>
       <button class="btn-clear" id="btn-clear" data-i18n="btn_clear"></button>
 
       <div class="result-table-wrap">
@@ -134,7 +149,19 @@ document.addEventListener("DOMContentLoaded", () => {
     return Array.from(arr).map(b => b.toString(16).padStart(2,'0').toUpperCase()).join(' ');
   };
 
+  
+  const CTRL_NAMES = {
+    0: "Null", 1: "Start of Heading", 2: "Start of Text", 3: "End of Text", 4: "End of Transmission", 5: "Enquiry", 6: "Acknowledge", 7: "Bell", 8: "Backspace", 9: "Tab", 10: "Line Feed", 11: "Vertical Tab", 12: "Form Feed", 13: "Carriage Return", 14: "Shift Out", 15: "Shift In", 16: "Data Link Escape", 17: "Device Control 1", 18: "Device Control 2", 19: "Device Control 3", 20: "Device Control 4", 21: "Negative Acknowledge", 22: "Synchronous Idle", 23: "End of Transmission Block", 24: "Cancel", 25: "End of Medium", 26: "Substitute", 27: "Escape", 28: "File Separator", 29: "Group Separator", 30: "Record Separator", 31: "Unit Separator", 127: "Delete"
+  };
+
+  const modeRadios = document.querySelectorAll("input[name=\"mode\"]");
+
+  const getMode = () => Array.from(modeRadios).find(r => r.checked).value;
+
   const updateCodes = () => {
+    let currentMode = getMode();
+    inp.placeholder = currentMode === 'encode' ? T("charcode_placeholder") : T("charcode_decode_placeholder");
+
     const text = inp.value;
     if (!text) {
       resultTable.style.display = "none";
@@ -147,31 +174,84 @@ document.addEventListener("DOMContentLoaded", () => {
     emptyMsg.style.display = "none";
     let html = "";
     
-    for (const char of text) {
-      const isSpace = char === ' ' || char === '\u3000';
-      const isNewline = char === '\n' || char === '\r';
-      if (isNewline) continue;
-      
-      const codePoint = char.codePointAt(0);
-      const hex = codePoint.toString(16).toUpperCase().padStart(4, '0');
-      const dec = codePoint.toString(10);
-      const utf8 = getUTF8Hex(char);
-      
-      let displayChar = char;
-      if (isSpace) {
-        displayChar = '<span style="color:var(--muted2); font-size:0.7rem;">(Space)</span>';
-      }
+    if (currentMode === 'encode') {
+      for (const char of text) {
+        const isSpace = char === ' ' || char === '\u3000';
+        const isNewline = char === '\n' || char === '\r';
+        if (isNewline) continue;
+        
+        const codePoint = char.codePointAt(0);
+        const hex = codePoint.toString(16).toUpperCase().padStart(4, '0');
+        const dec = codePoint.toString(10);
+        const utf8 = getUTF8Hex(char);
+        
 
-      html += `<tr>
-        <td class="char-cell">${displayChar}</td>
-        <td class="code-cell">U+${hex}</td>
-        <td class="dec-cell">${dec}</td>
-        <td class="code-cell">${utf8}</td>
-      </tr>`;
+        let displayChar = char;
+        if (isSpace) {
+          displayChar = "<span style=\"color:var(--muted2); font-size:0.7rem;\">(Space)</span>";
+        } else if (codePoint < 32 || codePoint === 127) {
+          const ctrlName = CTRL_NAMES[codePoint] || "Unknown";
+          displayChar = "<span style=\"color:var(--muted2); font-size:0.75rem;\">" + T("charcode_ctrl").replace("{name}", ctrlName) + "</span>";
+        }
+
+        html += `<tr>
+          <td class="char-cell">${displayChar}</td>
+          <td class="code-cell">U+${hex}</td>
+          <td class="dec-cell">${dec}</td>
+          <td class="code-cell">${utf8}</td>
+        </tr>`;
+      }
+    } else {
+      const tokens = text.trim().split(/[\s,]+/);
+      for (const token of tokens) {
+        if (!token) continue;
+        let code = NaN;
+        const upperToken = token.toUpperCase();
+        
+        if (upperToken.startsWith('U+')) {
+          code = parseInt(token.substring(2), 16);
+        } else if (upperToken.startsWith('0X')) {
+          code = parseInt(token.substring(2), 16);
+        } else {
+          code = parseInt(token, 10);
+        }
+        
+        if (isNaN(code) || code < 0 || code > 0x10FFFF) {
+           html += `<tr>
+             <td class="char-cell invalid-cell">(Invalid)</td>
+             <td class="code-cell">-</td>
+             <td class="dec-cell">-</td>
+             <td class="code-cell">-</td>
+           </tr>`;
+        } else {
+
+           const char = String.fromCodePoint(code);
+           const isSpace = char === " " || char === "\u3000";
+           
+           let displayChar = char;
+           if (isSpace) {
+             displayChar = "<span style=\"color:var(--muted2); font-size:0.7rem;\">(Space)</span>";
+           } else if (code < 32 || code === 127) {
+             const ctrlName = CTRL_NAMES[code] || "Unknown";
+             displayChar = "<span style=\"color:var(--muted2); font-size:0.75rem;\">" + T("charcode_ctrl").replace("{name}", ctrlName) + "</span>";
+           }
+
+           const hex = code.toString(16).toUpperCase().padStart(4, "0");
+           const dec = code.toString(10);
+           const utf8 = getUTF8Hex(char);
+           html += `<tr>
+             <td class="char-cell">${displayChar}</td>
+             <td class="code-cell">U+${hex}</td>
+             <td class="dec-cell">${dec}</td>
+             <td class="code-cell">${utf8}</td>
+           </tr>`;
+        }
+      }
     }
     resultBody.innerHTML = html;
   };
 
+  modeRadios.forEach(r => r.addEventListener("change", updateCodes));
   inp.addEventListener("input", updateCodes);
 
   btnClear.addEventListener("click", () => {
