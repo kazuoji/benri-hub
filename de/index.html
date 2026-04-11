@@ -71,6 +71,10 @@
     }
 
     .site-logo {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      z-index: 1;
       font-family: 'Shippori Mincho', serif;
       font-size: 1.1rem;
       font-weight: 800;
@@ -79,6 +83,18 @@
       text-decoration: none;
       white-space: nowrap;
     }
+
+    .logo-watermark {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    height: 160%;
+    width: auto;
+    opacity: 0.4;
+    z-index: -1;
+    pointer-events: none;
+  }
 
     .site-logo span {
       font-family: 'Noto Sans JP', sans-serif;
@@ -162,6 +178,23 @@
       text-transform: uppercase;
       color: var(--muted2);
       margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: calc(50% - 0.9em);
+      transform: translate(-50%, -50%);
+      width: 1.8em;
+      height: 1.8em;
+      background: url("/images/favicon.png?v=1") no-repeat center;
+      background-size: contain;
+      opacity: 0.4;
+      z-index: -1;
+      pointer-events: none;
     }
 
     .hero-title {
@@ -172,6 +205,23 @@
       letter-spacing: 0.06em;
       line-height: 1.2;
       margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: calc(50% - 0.9em);
+      transform: translate(-50%, -50%);
+      width: 1.8em;
+      height: 1.8em;
+      background: url("/images/favicon.png?v=1") no-repeat center;
+      background-size: contain;
+      opacity: 0.4;
+      z-index: -1;
+      pointer-events: none;
     }
 
     .hero-desc {
@@ -232,7 +282,7 @@
     }
 
     .tool-icon {
-      font-size: 1.4rem;
+      font-size: 1.8rem;
       line-height: 1;
     }
 
@@ -278,7 +328,8 @@
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 8px;
+      position: relative;
+      z-index: 1;
     }
 
     .footer-copy {
@@ -357,12 +408,12 @@
       font-weight: normal;
     }
   </style>
-  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <link rel="icon" href="/images/favicon.png?v=1" type="image/png">
 </head>
 
 <body>
   <header>
-    <a href="/de/" class="site-logo">BenriHub<span>made by Japanese</span></a>
+    <a href="/de/" class="site-logo"><img src="/images/favicon.png?v=1" alt="BenriHub Logo" class="logo-watermark">BenriHub<span>made by Japanese</span></a>
     <div class="header-right">
       <nav class="header-nav">
         <a href="/de/about/" data-i18n="footer_about"></a>

@@ -53,12 +53,24 @@
   .footer-links a:hover { color:var(--accent); }
   @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
   .beta-badge { display:inline-block; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; border:1px solid var(--accent); color:var(--accent); padding:1px 5px; border-radius:2px; vertical-align:middle; margin-left:8px; font-weight:normal; }
+
+  .logo-watermark {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    height: 160%;
+    width: auto;
+    opacity: 0.4;
+    z-index: -1;
+    pointer-events: none;
+  }
 </style>
-  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <link rel="icon" href="/images/favicon.png?v=1" type="image/png">
 </head>
 <body>
 <header>
-  <a href="/es/" class="site-logo">BenriHub<span>made by Japanese</span></a>
+  <a href="/es/" class="site-logo"><img src="/images/favicon.png?v=1" alt="BenriHub Logo" class="logo-watermark">BenriHub<span>made by Japanese</span></a>
   <div class="header-right">
     <nav class="header-nav">
       <a href="/es/about/" data-i18n="footer_about"></a>

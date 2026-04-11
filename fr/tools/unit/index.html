@@ -73,6 +73,10 @@
         }
 
         .site-logo {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      z-index: 1;
             font-family: 'Shippori Mincho', serif;
             font-size: 1.1rem;
             font-weight: 800;
@@ -82,7 +86,19 @@
             white-space: nowrap;
         }
 
-        .site-logo span {
+        .logo-watermark {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    height: 160%;
+    width: auto;
+    opacity: 0.4;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+    .site-logo span {
             font-family: 'Noto Sans JP', sans-serif;
             font-size: 0.55rem;
             font-weight: 400;
@@ -192,7 +208,8 @@
 
         .tabs {
             display: flex;
-            gap: 8px;
+            position: relative;
+      z-index: 1;
             margin-bottom: 24px;
             border-bottom: 1px solid var(--border);
             padding-bottom: 8px;
@@ -230,7 +247,8 @@
         .unit-row {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            position: relative;
+      z-index: 1;
         }
 
         .unit-label {
@@ -241,7 +259,8 @@
 
         .unit-input-group {
             display: flex;
-            gap: 8px;
+            position: relative;
+      z-index: 1;
         }
 
         .unit-input {
@@ -316,7 +335,8 @@
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 8px;
+            position: relative;
+      z-index: 1;
         }
 
         .footer-copy {
@@ -355,12 +375,12 @@
             font-weight: normal;
         }
     </style>
-  <link rel="icon" href="/images/favicon.png" type="image/png">
+  <link rel="icon" href="/images/favicon.png?v=1" type="image/png">
 </head>
 
 <body>
     <header>
-        <a href="/fr/" class="site-logo">BenriHub<span>made by Japanese</span></a>
+        <a href="/fr/" class="site-logo"><img src="/images/favicon.png?v=1" alt="BenriHub Logo" class="logo-watermark">BenriHub<span>made by Japanese</span></a>
         <div class="header-right">
             <nav class="header-nav">
                 <a href="/fr/about/" data-i18n="footer_about"></a>
