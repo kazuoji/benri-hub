@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es" data-lang="es" data-path="tools/password/">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Genera contraseñas fuertes y seguras en tu navegador. Longitud y conjuntos de caracteres totalmente personalizables. Utiliza aleatoriedad criptográfica segura.">
+<meta name="robots" content="index, follow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none';">
+<link rel="canonical" href="https://benri-hub.com/tools/password/">
+<link rel="alternate" hreflang="ja" href="https://benri-hub.com/tools/password/">
+<link rel="alternate" hreflang="en" href="https://benri-hub.com/en/tools/password/">
+<link rel="alternate" hreflang="zh-CN" href="https://benri-hub.com/zh/tools/password/">
+<link rel="alternate" hreflang="es" href="https://benri-hub.com/es/tools/password/">
+<link rel="alternate" hreflang="fr" href="https://benri-hub.com/fr/tools/password/">
+<link rel="alternate" hreflang="de" href="https://benri-hub.com/de/tools/password/">
+<link rel="alternate" hreflang="x-default" href="https://benri-hub.com/tools/password/">
+<title>Generador de Contraseñas — BenriHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Noto+Sans+JP:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0f0f0f; --card:#1c1c1c; --border:#272727; --accent:#c8b89a; --accent2:#e8d5b7; --text:#e8e2d8; --muted:#555; --muted2:#888; --danger:#b94040; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); min-height:100dvh; display:flex; flex-direction:column; }
+  body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"); pointer-events:none; z-index:0; }
+  header { position:relative; z-index:1; border-bottom:1px solid var(--border); padding:8px clamp(16px,5vw,48px); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; min-height:56px; gap:12px; }
+  .site-logo { position: relative; z-index: 1; font-family:'Shippori Mincho',serif; font-size:1.1rem; font-weight:800; color:var(--accent2); letter-spacing:0.1em; text-decoration:none; white-space:nowrap; }
+  .site-logo span { font-family:'Noto Sans JP',sans-serif; font-size:0.55rem; font-weight:400; color:var(--muted2); letter-spacing:0.05em; margin-left:8px; vertical-align:middle; }
+  .header-right { display:flex; align-items:center; gap:clamp(12px, 3vw, 24px); flex-wrap:wrap; justify-content:flex-end; }
+  .header-nav { display:flex; gap:12px; }
+  .header-nav a { font-size:0.75rem; color:var(--text); text-decoration:none; letter-spacing:0.05em; transition:color 0.15s; white-space:nowrap; }
+  .header-nav a:hover { color:var(--accent); }
+  #lang-switcher { display:flex; gap:4px; flex-wrap:wrap; justify-content:flex-end; }
+  .lang-btn { background:transparent; border:1px solid var(--border); color:var(--muted); font-size:0.6rem; padding:3px 7px; border-radius:2px; letter-spacing:0.05em; transition:all 0.15s; font-family:'Noto Sans JP',sans-serif; white-space:nowrap; text-decoration:none; }
+  .lang-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .lang-btn.active { border-color:var(--accent); color:var(--accent2); background:rgba(200,184,154,0.08); }
+
+  main { position:relative; z-index:1; flex:1; display:flex; align-items:center; justify-content:center; padding:clamp(32px,6vw,64px) 16px; }
+  .tool-wrap { width:100%; max-width:600px; animation:fadeUp 0.6s ease both; }
+  .tool-label { font-size:0.63rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .tool-title { font-family:'Shippori Mincho',serif; font-size:clamp(1.4rem,5vw,1.8rem); font-weight:800; color:var(--accent2); letter-spacing:0.06em; margin-bottom:28px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:4px; padding:clamp(20px,6vw,32px); position:relative; }
+
+  /* Password Result Area */
+  .pw-display-wrap { background:var(--bg); border:1px solid var(--border); border-radius:4px; padding:20px; margin-bottom:24px; position:relative; display:flex; align-items:center; min-height:80px; }
+  #pw-result { font-family:'JetBrains Mono',monospace; font-size:clamp(1rem, 4vw, 1.4rem); color:var(--accent2); word-break:break-all; flex:1; margin-right:48px; min-height:1.4em; }
+  .btn-copy { position:absolute; right:16px; top:50%; transform:translateY(-50%); background:transparent; border:1px solid var(--border); color:var(--muted2); padding:8px; border-radius:4px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; }
+  .btn-copy:hover { border-color:var(--accent); color:var(--accent); background:rgba(255,255,255,0.03); }
+  .btn-copy svg { width:18px; height:18px; }
+  .copy-status { position:absolute; bottom:-20px; right:16px; font-size:0.65rem; color:var(--accent); opacity:0; transition:opacity 0.3s; pointer-events:none; }
+  .copy-status.show { opacity:1; }
+
+  /* Controls */
+  .control-group { margin-bottom:20px; }
+  .control-label-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .control-label { font-size:0.8rem; color:var(--text); font-weight:500; }
+  .control-value { font-family:'JetBrains Mono',monospace; font-size:0.9rem; color:var(--accent); }
+  input[type="range"] { -webkit-appearance:none; width:100%; height:4px; background:var(--border); border-radius:2px; outline:none; margin:12px 0; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; background:var(--accent2); border-radius:50%; cursor:pointer; transition:transform 0.1s; }
+  input[type="range"]::-webkit-slider-thumb:hover { transform:scale(1.1); }
+
+  .options-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px; margin-bottom:28px; }
+  .option-item { display:flex; align-items:center; gap:8px; cursor:pointer; background:var(--bg); padding:10px 12px; border:1px solid var(--border); border-radius:3px; transition:all 0.2s; }
+  .option-item:hover { border-color:var(--muted2); }
+  .option-item input { accent-color:var(--accent); cursor:pointer; }
+  .option-item span { font-size:0.8rem; color:var(--muted2); }
+  .option-item input:checked + span { color:var(--text); }
+
+  .btn-generate { width:100%; padding:14px; background:transparent; border:1px solid var(--accent); color:var(--accent2); font-family:'Noto Sans JP',sans-serif; font-size:0.95rem; font-weight:500; border-radius:2px; cursor:pointer; transition:all 0.2s; letter-spacing:0.05em; margin-bottom:20px; }
+  .btn-generate:hover { background:rgba(200,184,154,0.1); border-color:var(--accent2); }
+
+  /* Legal Disclaimer */
+  .disclaimer { border-top:1px solid var(--border); padding-top:20px; margin-top:10px; font-size:0.65rem; color:var(--muted2); line-height:1.6; }
+  .disclaimer strong { color:var(--danger); font-weight:500; }
+
+  footer { position:relative; z-index:1; border-top:1px solid var(--border); padding:16px clamp(16px,5vw,48px); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .footer-copy { font-size:0.62rem; color:var(--muted); }
+  .footer-note { font-size:0.6rem; color:#333; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  .logo-watermark { position: absolute; top: 50%; left: 12px; transform: translateY(-50%); height: 150%; width: auto; opacity: 0.4; z-index: -1; pointer-events: none; }
+</style>
+<link rel="icon" href="/images/favicon.png?v=1" type="image/png">
+<link rel="apple-touch-icon" href="/images/favicon.png">
+<link rel="manifest" href="/manifest.json">
+</head>
+<body>
+<header>
+  <a href="/es/" class="site-logo"><img src="/images/favicon.png?v=1" alt="BenriHub Logo" class="logo-watermark">BenriHub<span>made by Japanese</span></a>
+  <div class="header-right">
+    <nav class="header-nav">
+      <a href="/about/" data-i18n="footer_about"></a>
+      <a href="/privacy/" data-i18n="footer_privacy"></a>
+    </nav>
+    <div id="lang-switcher"></div>
+  </div>
+</header>
+<main>
+  <div class="tool-wrap">
+    <div class="tool-label" data-i18n="tool_label"></div>
+    <h1 class="tool-title" data-i18n="tool_password_title"></h1>
+    <div class="card">
+      
+      <div class="pw-display-wrap">
+        <div id="pw-result"></div>
+        <button class="btn-copy" id="btn-copy" title="Copy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        </button>
+        <div class="copy-status" id="copy-status" data-i18n="pw_copied"></div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label-row">
+          <span class="control-label" id="label-len"></span>
+          <span class="control-value" id="val-len">16</span>
+        </div>
+        <input type="range" id="input-len" min="4" max="64" value="16">
+      </div>
+
+      <div class="options-grid">
+        <label class="option-item"><input type="checkbox" id="opt-upper" checked><span data-i18n="pw_uppercase"></span></label>
+        <label class="option-item"><input type="checkbox" id="opt-lower" checked><span data-i18n="pw_lowercase"></span></label>
+        <label class="option-item"><input type="checkbox" id="opt-numbers" checked><span data-i18n="pw_numbers"></span></label>
+        <label class="option-item"><input type="checkbox" id="opt-symbols" checked><span data-i18n="pw_symbols"></span></label>
+      </div>
+
+      <button class="btn-generate" id="btn-generate" data-i18n="pw_generate"></button>
+
+      <div class="disclaimer">
+        <div data-i18n="pw_disclaimer"></div>
+      </div>
+    </div>
+  </div>
+</main>
+<footer>
+  <span class="footer-copy" data-i18n="footer_copy"></span>
+  <span class="footer-note" data-i18n="footer_note"></span>
+</footer>
+
+<script src="/i18n.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const resultEl = document.getElementById("pw-result");
+  const lenInp = document.getElementById("input-len");
+  const lenVal = document.getElementById("val-len");
+  const lenLabel = document.getElementById("label-len");
+  const btnGenerate = document.getElementById("btn-generate");
+  const btnCopy = document.getElementById("btn-copy");
+  const copyStatus = document.getElementById("copy-status");
+
+  const opts = {
+    upper: document.getElementById("opt-upper"),
+    lower: document.getElementById("opt-lower"),
+    nums: document.getElementById("opt-numbers"),
+    syms: document.getElementById("opt-symbols"),
+  };
+
+  const CHARS = {
+    upper: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    lower: "abcdefghijklmnopqrstuvwxyz",
+    nums: "0123456789",
+    syms: "!@#$%^&*()_+-=[]{}|;:,.<>?"
+  };
+
+  const fullLang = document.documentElement.getAttribute("data-lang") || "ja";
+  const lang = LANGS[fullLang] ? fullLang : fullLang.split('-')[0];
+  const T = key => (LANGS[lang] && LANGS[lang][key]) || LANGS.ja[key] || key;
+
+  const updateLabels = () => {
+    lenLabel.textContent = T("pw_length").replace("{len}", "");
+    lenVal.textContent = lenInp.value;
+  };
+
+  const generatePassword = () => {
+    const length = parseInt(lenInp.value);
+    let charset = "";
+    if (opts.upper.checked) charset += CHARS.upper;
+    if (opts.lower.checked) charset += CHARS.lower;
+    if (opts.nums.checked) charset += CHARS.nums;
+    if (opts.syms.checked) charset += CHARS.syms;
+
+    if (!charset) {
+      resultEl.textContent = "";
+      return;
+    }
+
+    let password = "";
+    const array = new Uint32Array(length);
+    window.crypto.getRandomValues(array);
+    
+    for (let i = 0; i < length; i++) {
+      password += charset.charAt(array[i] % charset.length);
+    }
+    resultEl.textContent = password;
+  };
+
+  lenInp.addEventListener("input", updateLabels);
+  btnGenerate.addEventListener("click", generatePassword);
+
+  btnCopy.addEventListener("click", () => {
+    const text = resultEl.textContent;
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      copyStatus.classList.add("show");
+      setTimeout(() => copyStatus.classList.remove("show"), 2000);
+    });
+  });
+
+  // Initial
+  updateLabels();
+  generatePassword();
+});
+</script>
+</body>
+</html>

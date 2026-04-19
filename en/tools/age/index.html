@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en" data-path="tools/age/">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Enter your birth date to calculate your exact age (years, months, days), total days lived, and countdown to your next birthday.">
+<meta name="robots" content="index, follow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none';">
+<link rel="canonical" href="https://benri-hub.com/tools/age/">
+<link rel="alternate" hreflang="ja" href="https://benri-hub.com/tools/age/">
+<link rel="alternate" hreflang="en" href="https://benri-hub.com/en/tools/age/">
+<link rel="alternate" hreflang="zh-CN" href="https://benri-hub.com/zh/tools/age/">
+<link rel="alternate" hreflang="es" href="https://benri-hub.com/es/tools/age/">
+<link rel="alternate" hreflang="fr" href="https://benri-hub.com/fr/tools/age/">
+<link rel="alternate" hreflang="de" href="https://benri-hub.com/de/tools/age/">
+<link rel="alternate" hreflang="x-default" href="https://benri-hub.com/tools/age/">
+<title>Age Calculator — BenriHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0f0f0f; --card:#1c1c1c; --border:#272727; --accent:#c8b89a; --accent2:#e8d5b7; --text:#e8e2d8; --muted:#555; --muted2:#888; --accent-rgb:200,184,154; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Noto Sans JP',sans-serif; background:var(--bg); color:var(--text); min-height:100dvh; display:flex; flex-direction:column; }
+  body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"); pointer-events:none; z-index:0; }
+  header { position:relative; z-index:1; border-bottom:1px solid var(--border); padding:8px clamp(16px,5vw,48px); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; min-height:56px; gap:12px; }
+  .site-logo { position: relative; z-index: 1; font-family:'Shippori Mincho',serif; font-size:1.1rem; font-weight:800; color:var(--accent2); letter-spacing:0.1em; text-decoration:none; white-space:nowrap; }
+  .site-logo span { font-family:'Noto Sans JP',sans-serif; font-size:0.55rem; font-weight:400; color:var(--muted2); letter-spacing:0.05em; margin-left:8px; vertical-align:middle; }
+  .header-right { display:flex; align-items:center; gap:clamp(12px, 3vw, 24px); flex-wrap:wrap; justify-content:flex-end; }
+  .header-nav { display:flex; gap:12px; }
+  .header-nav a { font-size:0.75rem; color:var(--text); text-decoration:none; transition:color 0.15s; white-space:nowrap; }
+  .header-nav a:hover { color:var(--accent); }
+  #lang-switcher { display:flex; gap:4px; flex-wrap:wrap; justify-content:flex-end; }
+  .lang-btn { background:transparent; border:1px solid var(--border); color:var(--muted); font-size:0.6rem; padding:3px 7px; border-radius:2px; transition:all 0.15s; font-family:'Noto Sans JP',sans-serif; white-space:nowrap; text-decoration:none; }
+  .lang-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .lang-btn.active { border-color:var(--accent); color:var(--accent2); background:rgba(var(--accent-rgb), 0.08); }
+
+  main { position:relative; z-index:1; flex:1; display:flex; align-items:center; justify-content:center; padding:clamp(32px,6vw,64px) 16px; }
+  .tool-wrap { width:100%; max-width:600px; animation:fadeUp 0.6s ease both; }
+  .tool-label { font-size:0.63rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  .tool-title { font-family:'Shippori Mincho',serif; font-size:clamp(1.4rem,5vw,1.8rem); font-weight:800; color:var(--accent2); letter-spacing:0.06em; margin-bottom:28px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:4px; padding:clamp(20px,6vw,32px); }
+
+  .input-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:20px; margin-bottom:32px; }
+  .input-item label { display:block; font-size:0.75rem; color:var(--muted2); margin-bottom:8px; letter-spacing:0.05em; }
+  input[type="date"] { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:3px; color:var(--text); padding:10px 12px; font-family:'Noto Sans JP',sans-serif; font-size:0.95rem; outline:none; transition:border-color 0.2s; color-scheme:dark; }
+  input[type="date"]:focus { border-color:var(--accent); }
+
+  .result-area { border-top:1px solid var(--border); padding-top:32px; }
+  .age-main { font-family:'Shippori Mincho',serif; font-size:clamp(2rem, 8vw, 3rem); color:var(--accent2); text-align:center; margin-bottom:8px; }
+  .age-detail { font-size:1.1rem; color:var(--text); text-align:center; margin-bottom:32px; letter-spacing:0.05em; }
+
+  .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; }
+  .stat-card { background:rgba(255,255,255,0.02); border:1px solid var(--border); padding:16px; border-radius:3px; text-align:center; }
+  .stat-label { font-size:0.7rem; color:var(--muted2); margin-bottom:8px; text-transform:uppercase; }
+  .stat-value { font-size:1rem; color:var(--accent); font-weight:500; }
+
+  footer { position:relative; z-index:1; border-top:1px solid var(--border); padding:16px clamp(16px,5vw,48px); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .footer-copy { font-size:0.62rem; color:var(--muted); }
+  .footer-note { font-size:0.6rem; color:#333; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  .logo-watermark { position: absolute; top: 50%; left: 12px; transform: translateY(-50%); height: 150%; width: auto; opacity: 0.4; z-index: -1; pointer-events: none; }
+</style>
+<link rel="icon" href="/images/favicon.png?v=1" type="image/png">
+<link rel="apple-touch-icon" href="/images/favicon.png">
+<link rel="manifest" href="/manifest.json">
+</head>
+<body>
+<header>
+  <a href="/en/" class="site-logo"><img src="/images/favicon.png?v=1" alt="BenriHub Logo" class="logo-watermark">BenriHub<span>made by Japanese</span></a>
+  <div class="header-right">
+    <nav class="header-nav">
+      <a href="/about/" data-i18n="footer_about"></a>
+      <a href="/privacy/" data-i18n="footer_privacy"></a>
+    </nav>
+    <div id="lang-switcher"></div>
+  </div>
+</header>
+<main>
+  <div class="tool-wrap">
+    <div class="tool-label" data-i18n="tool_label"></div>
+    <h1 class="tool-title" data-i18n="tool_age_title"></h1>
+    <div class="card">
+      <div class="input-grid">
+        <div class="input-item">
+          <label for="birth-date" data-i18n="age_birthdate"></label>
+          <input type="date" id="birth-date" value="2000-01-01">
+        </div>
+        <div class="input-item">
+          <label for="ref-date" data-i18n="age_reference"></label>
+          <input type="date" id="ref-date">
+        </div>
+      </div>
+
+      <div class="result-area">
+        <div class="age-main" id="age-years"></div>
+        <div class="age-detail" id="age-detail"></div>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label" data-i18n="age_total_days_label">累計日数</div>
+            <div class="stat-value" id="total-days"></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label" data-i18n="age_next_birthday_label">次の誕生日</div>
+            <div class="stat-value" id="next-birthday"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<footer>
+  <span class="footer-copy" data-i18n="footer_copy"></span>
+  <span class="footer-note" data-i18n="footer_note"></span>
+</footer>
+
+<script src="/i18n.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const birthInp = document.getElementById("birth-date");
+  const refInp = document.getElementById("ref-date");
+  const yearsEl = document.getElementById("age-years");
+  const detailEl = document.getElementById("age-detail");
+  const totalDaysEl = document.getElementById("total-days");
+  const nextBirthEl = document.getElementById("next-birthday");
+
+  // Set default reference date to today
+  const today = new Date().toISOString().split('T')[0];
+  refInp.value = today;
+
+  const fullLang = document.documentElement.getAttribute("data-lang") || "ja";
+  const lang = LANGS[fullLang] ? fullLang : fullLang.split('-')[0];
+  const T = (key, data={}) => {
+    let text = (LANGS[lang] && LANGS[lang][key]) || LANGS.ja[key] || key;
+    Object.keys(data).forEach(k => text = text.replace(`{${k}}`, data[k]));
+    return text;
+  };
+
+  const calculate = () => {
+    const birth = new Date(birthInp.value);
+    const ref = new Date(refInp.value);
+
+    if (isNaN(birth) || isNaN(ref)) return;
+
+    // 1. Age calculation (Years, Months, Days)
+    let y = ref.getFullYear() - birth.getFullYear();
+    let m = ref.getMonth() - birth.getMonth();
+    let d = ref.getDate() - birth.getDate();
+
+    if (d < 0) {
+      m--;
+      const lastMonth = new Date(ref.getFullYear(), ref.getMonth(), 0);
+      d += lastMonth.getDate();
+    }
+    if (m < 0) {
+      y--;
+      m += 12;
+    }
+
+    yearsEl.textContent = T("age_result_years", {y});
+    detailEl.textContent = T("age_result_detail", {y, m, d});
+
+    // 2. Total days lived
+    const diffTime = ref - birth;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    totalDaysEl.textContent = T("age_total_days", {d: diffDays.toLocaleString()});
+
+    // 3. Next birthday
+    let nextB = new Date(ref.getFullYear(), birth.getMonth(), birth.getDate());
+    if (nextB < ref) {
+      nextB.setFullYear(ref.getFullYear() + 1);
+    }
+    const nextDiff = Math.ceil((nextB - ref) / (1000 * 60 * 60 * 24));
+    nextBirthEl.textContent = nextDiff === 0 ? "Happy Birthday!" : T("age_next_birthday", {d: nextDiff});
+  };
+
+  birthInp.addEventListener("change", calculate);
+  refInp.addEventListener("change", calculate);
+  calculate();
+});
+</script>
+</body>
+</html>
